@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 from datetime import datetime, timedelta
-import quantstats as qs
+# import quantstats as qs
 
 st.set_page_config(
     page_title="Crypto Trend Dashboard",  # Title of the page
@@ -17,19 +17,19 @@ st.title("Crypto Trend Dashboard")
 
 #################################################################################################
 # Helper Functions
-def qs_stats_light(returns, periods=12):
+# def qs_stats_light(returns, periods=12):
 
-    cagr = returns.apply(qs.stats.cagr)
-    er = returns.apply(qs.stats.expected_return) * periods
-    vol = returns.apply(qs.stats.volatility, periods=periods)
-    sharpe = returns.apply(qs.stats.sharpe, periods=periods)
-    sortino = returns.apply(qs.stats.sortino, periods=periods)
-    maxdd = returns.apply(qs.stats.max_drawdown)
-    calmar = returns.apply(qs.stats.calmar)
-    # greeks = sreturns.apply(qs.stats.greeks, benchmark=sreturns.SPX, periods=12)
-    result = pd.concat([cagr, er, vol, sharpe, sortino, maxdd, calmar, 1/calmar], axis=1)
-    result.columns =["CAGR", "Mean Return", "Volatility", "Sharpe", "Sortino", "Max DD", "Calmar", "InvCalmar"]
-    return result.sort_values("Sharpe", ascending=False).round(3)
+#     cagr = returns.apply(qs.stats.cagr)
+#     er = returns.apply(qs.stats.expected_return) * periods
+#     vol = returns.apply(qs.stats.volatility, periods=periods)
+#     sharpe = returns.apply(qs.stats.sharpe, periods=periods)
+#     sortino = returns.apply(qs.stats.sortino, periods=periods)
+#     maxdd = returns.apply(qs.stats.max_drawdown)
+#     calmar = returns.apply(qs.stats.calmar)
+#     # greeks = sreturns.apply(qs.stats.greeks, benchmark=sreturns.SPX, periods=12)
+#     result = pd.concat([cagr, er, vol, sharpe, sortino, maxdd, calmar, 1/calmar], axis=1)
+#     result.columns =["CAGR", "Mean Return", "Volatility", "Sharpe", "Sortino", "Max DD", "Calmar", "InvCalmar"]
+#     return result.sort_values("Sharpe", ascending=False).round(3)
 
 #################################################################################################
 # Data & Inputs
@@ -148,7 +148,7 @@ if selected_coin:
     rdata = trend_strat_long1[trend_strat_long1.ticker == selected_coin]
     rdata = rdata.pivot(index="date", columns="strategy", values="returns")
 
-    ss = qs_stats_light(rdata.dropna(), periods=365)
+    #ss = qs_stats_light(rdata.dropna(), periods=365)
 
     col1, col2 = st.columns(2)
     with col1:
@@ -204,7 +204,7 @@ if selected_coin:
         st.plotly_chart(fig_w_lo, use_container_width=True)
 
         st.text("Summary Statistics")
-        st.dataframe(ss, use_container_width=True)
+        #st.dataframe(ss, use_container_width=True)
 
 
     # Plot scaled trend signal
@@ -225,25 +225,25 @@ if selected_coin:
         tuple(periods), index = 2
     )
 
-    roll_sharpe = qs.stats.rolling_sharpe(rdata.dropna(), periods_per_year=365, rolling_period=selected_sharpe_rolling_period)
-    m_roll_sharpe = roll_sharpe.asfreq("W")
+    #roll_sharpe = qs.stats.rolling_sharpe(rdata.dropna(), periods_per_year=365, rolling_period=selected_sharpe_rolling_period)
+    #m_roll_sharpe = roll_sharpe.asfreq("W")
 
     # Heatmap 
-    fig_rsharpe = go.Figure(data=go.Heatmap(
-        z=m_roll_sharpe.T.values,
-        y=m_roll_sharpe.T.index.to_numpy(),
-        x=m_roll_sharpe.T.columns.to_numpy(),
-        colorscale='RdBu_r')
-    )
-    fig_rsharpe.update_layout(
-            title='Rolling sharpe heatmap (weekly)',
-            yaxis_nticks=m_roll_sharpe.shape[1], 
-            xaxis_nticks=m_roll_sharpe.shape[0],
-            xaxis_title="Date",
-            yaxis_title="Sharpe Ratio",
-            height=400
-            )
-    st.plotly_chart(fig_rsharpe, use_container_width=True)
+    # fig_rsharpe = go.Figure(data=go.Heatmap(
+    #     z=m_roll_sharpe.T.values,
+    #     y=m_roll_sharpe.T.index.to_numpy(),
+    #     x=m_roll_sharpe.T.columns.to_numpy(),
+    #     colorscale='RdBu_r')
+    # )
+    # fig_rsharpe.update_layout(
+    #         title='Rolling sharpe heatmap (weekly)',
+    #         yaxis_nticks=m_roll_sharpe.shape[1], 
+    #         xaxis_nticks=m_roll_sharpe.shape[0],
+    #         xaxis_title="Date",
+    #         yaxis_title="Sharpe Ratio",
+    #         height=400
+    #         )
+    # st.plotly_chart(fig_rsharpe, use_container_width=True)
 
     st.subheader(f"Trend Statistics for {selected_coin} for selected period")
 
