@@ -55,7 +55,7 @@ with col1:
     # Input Date
     # Select start date for strategy
     min_date_coin = prices[prices.ticker == selected_coin].date.min()
-    selected_startd = st.date_input("Select start date", "2023-01-01")
+    selected_startd = st.date_input("Select start date", "2023/01/01")
     selected_startd = str(selected_startd)[:10]
 
 with col2:
@@ -203,7 +203,7 @@ if selected_coin:
         )
         st.plotly_chart(fig_w_lo, use_container_width=True)
 
-        st.text("Average Net Exposure")
+        st.text("Average Net Exposure L/S Trend")
         #st.dataframe(ss, use_container_width=True)
         st.dataframe(avg_exposures20, use_container_width=True)
 
